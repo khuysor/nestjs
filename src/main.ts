@@ -5,6 +5,7 @@ import {
   ExternalError,
   ValidationExceptionFilter,
 } from './exception/custom-exception-response.exception';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -22,6 +23,15 @@ async function bootstrap() {
       },
     }),
   );
+  const options = new DocumentBuilder()
+    .setTitle('Your API Title')
+    .setDescription('API description')
+    .setVersion('1.0')
+    .addTag('your-tag') // Optional: Add tags for grouping
+    .build();
+  const document = SwaggerModule.createDocument(app, options);
+  SwaggerModule.setup('api/docs', app, document); // Serve the Swagger UI at /api/docs
+
   app.useGlobalFilters(new ValidationExceptionFilter(), new ExternalError());
   await app.listen(4001);
 }

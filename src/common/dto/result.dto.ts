@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class ResultRep<T> {
   @ApiProperty()
@@ -15,7 +15,7 @@ export class ResultRep<T> {
     }
   }
 
-  @ApiProperty({ required: false })
+  @ApiPropertyOptional({ type: 'object', required: false })
   data?: T;
 
   static success<T>(data?: T, msg?: string): ResultRep<T | null> {
@@ -35,4 +35,10 @@ export class ResultRep<T> {
   static failedWithMessage(msg: string): ResultRep<null> {
     return new ResultRep<null>(1, msg); // No data returned
   }
+}
+export class ResultRepWithOutData {
+  @ApiProperty()
+  code: number;
+  @ApiProperty()
+  msg: string;
 }

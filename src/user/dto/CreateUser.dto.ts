@@ -50,7 +50,28 @@ function enCodePassword(password: string) {
   const salt = bcrypt.genSaltSync();
   return bcrypt.hashSync(password, salt);
 }
-function toUserReponse(user: Prisma.UserUncheckedCreateInput | User) {
+export class UserResponseDto {
+  @ApiProperty()
+  id: number;
+
+  @ApiProperty()
+  userName: string;
+
+  @ApiProperty()
+  email: string;
+
+  @ApiProperty()
+  displayName: string;
+
+  @ApiProperty()
+  createdAt: Date;
+
+  @ApiProperty()
+  updatedAt: Date;
+}
+function toUserReponse(
+  user: Prisma.UserUncheckedCreateInput | User,
+): UserResponseDto {
   const response: any = {
     id: user.id,
     userName: user.username,
@@ -68,14 +89,19 @@ function toUserReponse(user: Prisma.UserUncheckedCreateInput | User) {
 }
 
 class UserLogin {
+  @ApiProperty()
   @IsNotEmpty()
   @IsString()
   userName: string;
+
+  @ApiProperty()
   @IsNotEmpty()
   password: string;
 }
 class UserLoginSuccess {
+  @ApiProperty()
   userName: string;
+  @ApiProperty()
   accessToken: string;
 }
 export { UserDto, toUserReponse, toUserCreate, UserLogin, UserLoginSuccess };

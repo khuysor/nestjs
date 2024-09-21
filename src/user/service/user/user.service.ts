@@ -17,25 +17,27 @@ export class UserService {
     private prisma: PrismaService,
     private jwtService: JwtService,
   ) {}
-  async deleteById(id: number) {
-    const res = await this.prisma.user.findUnique({
-      where: {
-        id: id,
-      },
-      include: {
-        user_setting: true,
-      },
-    });
-    if (!res) {
-      return ResultRep.failedWithMessage(`can't found user this id ${id}`);
-    }
-    const del = await this.prisma.user.delete({
-      where: { id: id },
-    });
-    if (del) {
-      return ResultRep.success();
-    }
-    return ResultRep.failed();
+  async deleteById(id: number): Promise<ResultRep<any>> {
+    return await this.prisma.user
+      .findUnique({
+        where: {
+          id: id,
+        },
+        include: {
+          user_setting: true,
+        },
+      })
+      .then((dt) => {
+        if (dt == null) {
+          return ResultRep.failedWithMessage(`can't found user this id ${id}`);
+        }
+        return this.prisma.user
+          .delete({
+            where: { id: id },
+          })
+          .then(() => ResultRep.success())
+          .catch(() => ResultRep.failed());
+      });
   }
   async saveOrUpdateUser(user: UserDto) {
     if (user.id != null) {
