@@ -26,7 +26,10 @@ import { UserService } from 'src/user/service/user/user.service';
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
-
+  @ApiResponse({
+    status: 201,
+    type: ResultRep,
+  })
   @Post('login')
   login(@Body() user: UserLogin) {
     return this.userService.userLogin(user);
